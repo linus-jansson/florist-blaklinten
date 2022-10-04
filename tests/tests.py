@@ -54,35 +54,44 @@ class testMenuLinks(unittest.TestCase):
     """
         Checks the navigation bar for the correct links
     """
-    def testText(self):
-        driver.get(website_url)
+    pages = [
+        "finspang.html",
+        "finspang-ua.html",
+        "norrkoping.html",
+        "norrkoping-ua.html",
+    ]
 
-        navigation = driver.find_element(By.TAG_NAME, "nav")
-        links = navigation.find_elements(By.TAG_NAME, "a")
-        required_links = [
-            "#home",
-            "#products",
-            "#services",
-            "#team"
-        ]
-        for link in required_links:
-            self.assertIn(link, [link.get_attribute("href").split('/')[-1] for link in links])
+    def testText(self):
+        for page in self.pages:
+            driver.get(website_url + page)
+            
+            navigation = driver.find_element(By.TAG_NAME, "nav")
+            links = navigation.find_elements(By.TAG_NAME, "a")
+            required_links = [
+                "#home",
+                "#products",
+                "#services",
+                "#team"
+            ]
+            for link in required_links:
+                self.assertIn(link, [link.get_attribute("href").split('/')[-1] for link in links])
  
     def testFlag(self):
-        driver.get(website_url)
+        for page in self.pages:
+            driver.get(website_url + page)
 
-        navigation = driver.find_element(By.TAG_NAME, "nav")
-        links = navigation.find_elements(By.TAG_NAME, "a")
+            navigation = driver.find_element(By.TAG_NAME, "nav")
+            links = navigation.find_elements(By.TAG_NAME, "a")
+            
+            self.assertIn("index-ua.html", [link.get_attribute("href").split('/')[-1] for link in links])
+
+            driver.get(website_url + "index-ua.html")
+            
+            navigation = driver.find_element(By.TAG_NAME, "nav")
+            links = navigation.find_elements(By.TAG_NAME, "a")
+
+            self.assertIn("index.html", [link.get_attribute("href").split('/')[-1] for link in links])
         
-        self.assertIn("index-ua.html", [link.get_attribute("href").split('/')[-1] for link in links])
-
-        driver.get(website_url + "index-ua.html")
-        
-        navigation = driver.find_element(By.TAG_NAME, "nav")
-        links = navigation.find_elements(By.TAG_NAME, "a")
-
-        self.assertIn("index.html", [link.get_attribute("href").split('/')[-1] for link in links])
-    
 
 class testIndex(unittest.TestCase):
     """
@@ -120,7 +129,7 @@ class testIndex(unittest.TestCase):
             driver.get(website_url + page_url)
             page_text = driver.find_element(By.ID, "page-content").text.replace("\n", " ")
             
-            for text in page_text:
+            for text in content:
                 self.assertIn(text, driver.page_source)
 
 class testHeader(unittest.TestCase):
@@ -134,8 +143,20 @@ class testHeader(unittest.TestCase):
         "Florist Blåklinten",
         "Для бронювання та замовлення телефонуйте нам 0640-555-333",
     ]
-    headerText = driver.find_element(By.ID, "home").text.replace("\n", " ")
 
+    pages = {
+        "finspang.html": header,
+        "norrkoping.html": header,
+        "finspang-ua.html": header_ukraine,
+        "norrkoping-ua.html": header_ukraine,
+    }
+    
+    def test(self):
+        for page_url, content in self.pages.items():
+            driver.get(website_url + page_url)
+            headerText = driver.find_element(By.ID, "home").text.replace("\n", " ")
+            for text in content:
+                self.assertIn(text, headerText)
 
 class testServices(unittest.TestCase):
     """
@@ -149,71 +170,96 @@ class testServices(unittest.TestCase):
         "Консультація 30 хв", "250 kr"
     ]
 
+    pages = {
+        "finspang.html": services,
+        "norrkoping.html": services,
+        "finspang-ua.html": services_ukraine,
+        "norrkoping-ua.html": services_ukraine,
+    }
+
     def test(self):
-        serviceText = driver.find_element(By.CLASS_NAME, "serviceCards").text.replace("\n", " ")
+        for page_url, content in self.pages.items():
+            driver.get(website_url + page_url)
+            serviceText = driver.find_element(By.CLASS_NAME, "serviceCards").text.replace("\n", " ")
+            for text in content:
+                self.assertIn(text, serviceText)
 
 
 class testProducts(unittest.TestCase):
     """
         test for products on all pages
     """
-    products = [
-        "Bröllopsbukett", "1200 kr",
-        "Begravningskrans", "800 kr",
-        "Höstbukett", "400 kr",
-        "Sommarbukett", "200 kr",
-        "Rosor 10-pack", "150 kr", 
-        "Tulpaner 10-pack", "100 kr", 
-    ]
-    products_ukraine = [
-        "Весільний букет", "1200 kr",
-        "Вінок", "800 kr",
-        "Осінній букет", "400 kr",
-        "Літній букет", "200 kr",
-        "Троянди 10 шт", "150 kr", 
-        "Тюльпани 10 шт", "100 kr", 
-    ]
     
-    def test(self):
-        productText = driver.find_element(By.CLASS_NAME, "cards").text.replace("\n", " ")
 
+    def test(self):
+        products = [
+            "Bröllopsbukett", "1200 kr",
+            "Begravningskrans", "800 kr",
+            "Höstbukett", "400 kr",
+            "Sommarbukett", "200 kr",
+            "Rosor 10-pack", "150 kr", 
+            "Tulpaner 10-pack", "100 kr", 
+        ]
+        products_ukraine = [
+            "Весільний букет", "1200 kr",
+            "Вінок", "800 kr",
+            "Осінній букет", "400 kr",
+            "Літній букет", "200 kr",
+            "Троянди 10 шт", "150 kr", 
+            "Тюльпани 10 шт", "100 kr", 
+        ]
+
+        pages = {
+            "finspang.html": products,
+            "norrkoping.html": products,
+            "finspang-ua.html": products_ukraine,
+            "norrkoping-ua.html": products_ukraine,
+        }
+
+        for page_url, content in self.pages.items():
+            driver.get(website_url + page_url)
+            productText = driver.find_element(By.CLASS_NAME, "cards").text.replace("\n", " ")
+            for text in content:
+                self.assertIn(text, productText)
 
 class testOpenHours(unittest.TestCase):
     """
         Test for the opening hours on all pages
     """
 
-    pages = {
-        "finspang.html": [
-            "Vardagar", "10 - 16",
-            "Lördag", "12 - 15",
-            "Söndag", "Stängt"
-        ],
-        "finspang-ua.html": [
-            "Пн-Пт", "10 - 16",
-            "Субота", "12 - 15",
-            "неділя", "Зачинено"
-        ],
-        "norrkoping.html": [
-            "Måndag", "10 - 17",
-            "Tisdag", "10 - 16",
-            "Onsdag", "10 - 15",
-            "Torsdag", "10 - 16",
-            "Fredag", "10 - 16",
-            "Lördag", "12 - 15",
-            "Söndag", "Stängt"
-        ],
-        "norrkoping-ua.html": [
-            "Понеділок", "10 - 17",
-            "Вівторок", "10 - 16",
-            "Середа", "10 - 15",
-            "четвер", "10 - 16",
-            "П'ятниця", "10 - 16",
-            "Субота", "12 - 15",
-            "Неділя", "Зачинено"
-        ]
-    }
+
     def test(self):
+        pages = {
+            "finspang.html": [
+                "Vardagar", "10 - 16",
+                "Lördag", "12 - 15",
+                "Söndag", "Stängt"
+            ],
+            "finspang-ua.html": [
+                "Пн-Пт", "10 - 16",
+                "Субота", "12 - 15",
+                "неділя", "Зачинено"
+            ],
+            "norrkoping.html": [
+                "Måndag", "10 - 17",
+                "Tisdag", "10 - 16",
+                "Onsdag", "10 - 15",
+                "Torsdag", "10 - 16",
+                "Fredag", "10 - 16",
+                "Lördag", "12 - 15",
+                "Söndag", "Stängt"
+            ],
+            "norrkoping-ua.html": [
+                "Понеділок", "10 - 17",
+                "Вівторок", "10 - 16",
+                "Середа", "10 - 15",
+                "четвер", "10 - 16",
+                "П'ятниця", "10 - 16",
+                "Субота", "12 - 15",
+                "Неділя", "Зачинено"
+            ]
+        }
+
         for page_url, required_page_content in pages.items():
             driver.get(website_url + page_url)
             page_content = driver.find_element(By.CLASS_NAME, "openHours").text.replace("\n", " ")
@@ -227,62 +273,62 @@ class testTeamContent(unittest.TestCase):
         test to check if the team section is correct
     """
 
-    pages = {
-        "finspang.html": [
-            "Vår personal",
-            "Välkommen till oss på Florist Blåklinten! Vi är ett sammansvetsat gäng med olika expertkompetenser som därmed kan hjälpa dig på bästa sätt utifrån dina behov.",
-            "Örjan Johansson",
-            "Florist",
-            "Om du behöver en bukett, oavsett om det är till bröllop, födelsedagsfirande eller något helt annat kan jag hjälpa dig att komponera buketten utifrån dina önskemål.",
-            "Anna Pettersson",
-            "Hortonom",
-            "Jag är utbildad hortonom och kan hjälpa dig eller ditt företag att göra det bästa valet utifrån dina behov och förutsättningar vad det gäller fruktträd, grönsaksodling och prydnadsväxter.",
-            "Fredrik Örtqvist",
-            "Ägare",
-            "Min kärlek till blommor lade grunden till att Florist Blåklinten finns idag och jag hoppas att du som kund kan inspireras i vår butik."
-        ],
-        "finspang-ua.html": [
-            "Наш персонал",
-            "Вітаємо у Florist Blåklinten! Наша дружня команда з різними експертними навичками,які можуть допомогти вам найкращим чином.",
-            "Örjan Johansson",
-            "Флорист",
-            "Якщо вам потрібен букет,чи то на весілля,день народження чи щось зовсім інше,я можу вам допомогти скласти букет за вашим бажанням.",
-            "Anna Pettersson",
-            "Експерт-садiвник",
-            "Я кваліфікований садівник і можу допомогти вам або вашій компанії зробити найкращий вибір,фруктових дерев,декоративних рослин або овочевих культур,враховуючи ваші потреби,умови та вподобання.",
-            "Fredrik Örtqvist",
-            "Власник",
-            "Моя любов до квітів заклала основу для існування Florist Blåklinten сьогодні, і я сподіваюся, що ви як клієнт можете надихнутися в нашому магазині."
-        ],
-        "norrkoping.html": [
-            "Vår personal",
-            "Välkommen till oss på Florist Blåklinten! Vi är ett sammansvetsat gäng med olika expertkompetenser som därmed kan hjälpa dig på bästa sätt utifrån dina behov.",
-            "Johan Olsson",
-            "Florist",
-            "Jag finner lugnet och inspirationen i mina japanska trädgårdar. Min specialitet är kundsamtalet där vi tillsammans drömmer fram just ert skräddarsydda blomsterkoncept!",
-            "Anna Andersson",
-            "Florist",
-            "När jag gör en bukett utgår jag ifrån en enda blomma. Till denna kärna lägger jag sedan till en blomma i taget tills buketten är lagom stor.",
-            "Elin Nygård",
-            "Hortonom",
-            "Min kolonilott är min bästa lärare. Låt mig få dela med mig av de kunskaper jag förvärvat genom dussintalet säsonger av ömsom färgprakt, ömsom missväxt."
-        ],
-        "norrkoping-ua.html": [
-            "Наш персонал",
-            "Вітаємо у Florist Blåklinten! Наша дружня команда з різними експертними навичками,які можуть допомогти вам найкращим чином.",
-            "Johan Olsson",
-            "Флорист",
-            "У своїх японських садах я знаходжу спокій і натхнення. Моя спеціалізація – спілкування з клієнтами, де ми разом створюємо індивідуальну квіткову концепцію!",
-            "Anna Andersson",
-            "Флорист",
-            "Коли я складаю букет, то починаю з квітки. Я додаю по одній квітці в цю серцевину, поки букет не стане потрібного розміру.",
-            "Elin Nygård",
-            "Експерт-садiвник",
-            "Мій сад – мій найкращий учитель. Дозвольте мені поділитися знаннями, які я отримав за десятки сезонів чергування пишних кольорів і уповільненого росту."
-        ]
-    }
-
     def test(self):
+        pages = {
+            "finspang.html": [
+                "Vår personal",
+                "Välkommen till oss på Florist Blåklinten! Vi är ett sammansvetsat gäng med olika expertkompetenser som därmed kan hjälpa dig på bästa sätt utifrån dina behov.",
+                "Örjan Johansson",
+                "Florist",
+                "Om du behöver en bukett, oavsett om det är till bröllop, födelsedagsfirande eller något helt annat kan jag hjälpa dig att komponera buketten utifrån dina önskemål.",
+                "Anna Pettersson",
+                "Hortonom",
+                "Jag är utbildad hortonom och kan hjälpa dig eller ditt företag att göra det bästa valet utifrån dina behov och förutsättningar vad det gäller fruktträd, grönsaksodling och prydnadsväxter.",
+                "Fredrik Örtqvist",
+                "Ägare",
+                "Min kärlek till blommor lade grunden till att Florist Blåklinten finns idag och jag hoppas att du som kund kan inspireras i vår butik."
+            ],
+            "finspang-ua.html": [
+                "Наш персонал",
+                "Вітаємо у Florist Blåklinten! Наша дружня команда з різними експертними навичками,які можуть допомогти вам найкращим чином.",
+                "Örjan Johansson",
+                "Флорист",
+                "Якщо вам потрібен букет,чи то на весілля,день народження чи щось зовсім інше,я можу вам допомогти скласти букет за вашим бажанням.",
+                "Anna Pettersson",
+                "Експерт-садiвник",
+                "Я кваліфікований садівник і можу допомогти вам або вашій компанії зробити найкращий вибір,фруктових дерев,декоративних рослин або овочевих культур,враховуючи ваші потреби,умови та вподобання.",
+                "Fredrik Örtqvist",
+                "Власник",
+                "Моя любов до квітів заклала основу для існування Florist Blåklinten сьогодні, і я сподіваюся, що ви як клієнт можете надихнутися в нашому магазині."
+            ],
+            "norrkoping.html": [
+                "Vår personal",
+                "Välkommen till oss på Florist Blåklinten! Vi är ett sammansvetsat gäng med olika expertkompetenser som därmed kan hjälpa dig på bästa sätt utifrån dina behov.",
+                "Johan Olsson",
+                "Florist",
+                "Jag finner lugnet och inspirationen i mina japanska trädgårdar. Min specialitet är kundsamtalet där vi tillsammans drömmer fram just ert skräddarsydda blomsterkoncept!",
+                "Anna Andersson",
+                "Florist",
+                "När jag gör en bukett utgår jag ifrån en enda blomma. Till denna kärna lägger jag sedan till en blomma i taget tills buketten är lagom stor.",
+                "Elin Nygård",
+                "Hortonom",
+                "Min kolonilott är min bästa lärare. Låt mig få dela med mig av de kunskaper jag förvärvat genom dussintalet säsonger av ömsom färgprakt, ömsom missväxt."
+            ],
+            "norrkoping-ua.html": [
+                "Наш персонал",
+                "Вітаємо у Florist Blåklinten! Наша дружня команда з різними експертними навичками,які можуть допомогти вам найкращим чином.",
+                "Johan Olsson",
+                "Флорист",
+                "У своїх японських садах я знаходжу спокій і натхнення. Моя спеціалізація – спілкування з клієнтами, де ми разом створюємо індивідуальну квіткову концепцію!",
+                "Anna Andersson",
+                "Флорист",
+                "Коли я складаю букет, то починаю з квітки. Я додаю по одній квітці в цю серцевину, поки букет не стане потрібного розміру.",
+                "Elin Nygård",
+                "Експерт-садiвник",
+                "Мій сад – мій найкращий учитель. Дозвольте мені поділитися знаннями, які я отримав за десятки сезонів чергування пишних кольорів і уповільненого росту."
+            ]
+        }
+        
         for page_url, required_page_content in pages.items():
             driver.get(website_url + page_url)
             page_content = driver.find_element(By.ID, "team").text.replace("\n", " ")
@@ -293,59 +339,58 @@ class testClosedDays(unittest.TestCase):
     """
         Test that the closed days are correct on all pages
     """
-    urls = [
-        "finspang.html",
-        "finspang-ua.html",
-        "norrkoping.html",
-        "norrkoping-ua.html",
-    ]
-    page_content = [
-        "Nyårsdagen",
-        "1 Januari",
-        "Trettondedag jul",
-        "6 Januari",
-        "Första maj",
-        "1 Maj",
-        "Sveriges nationaldag",
-        "6 Juni",
-        "Julafton",
-        "24 December",
-        "Juldagen",
-        "25 December",
-        "Annandag jul",
-        "26 December",
-        "Nyårsafton",
-        "31 December",
-    ]
-    page_content_ukraine = [
-            "Вихідні дні",
-            "Новий рік",
-            "1 січня",
-            "Тринадцятий день Різдва",
-            "6 січня",
-            "1 травня",
-            "1 травня",
-            "Національний день Швеції",
-            "6 червня",
-            "Святвечір",
-            "24 грудня",
-            "Різдво",
-            "25 грудня",
-            "День подарунків Різдва",
-            "26 грудня",
-            "Переддень Нового року",
-            "31 грудня",
-    ]
 
     def test(self):
-        for url in urls:
-            driver.get(website_url + url)
-            closedDaysText = driver.find_element(By.ID, "holidays").text.replace("\n", " ")
-            content_to_check = page_content if "ua" not in url else page_content_ukraine
-            
-            for text in content_to_check:
-                self.assertIn(text, closedDaysText)
-            print("Closed days text found")
+        page_content = [
+            "Nyårsdagen",
+            "1 Januari",
+            "Trettondedag jul",
+            "6 Januari",
+            "Första maj",
+            "1 Maj",
+            "Sveriges nationaldag",
+            "6 Juni",
+            "Julafton",
+            "24 December",
+            "Juldagen",
+            "25 December",
+            "Annandag jul",
+            "26 December",
+            "Nyårsafton",
+            "31 December",
+        ]
+        page_content_ukraine = [
+                "Вихідні дні",
+                "Новий рік",
+                "1 січня",
+                "Тринадцятий день Різдва",
+                "6 січня",
+                "1 травня",
+                "1 травня",
+                "Національний день Швеції",
+                "6 червня",
+                "Святвечір",
+                "24 грудня",
+                "Різдво",
+                "25 грудня",
+                "День подарунків Різдва",
+                "26 грудня",
+                "Переддень Нового року",
+                "31 грудня",
+        ]
+        pages = {
+            "finspang.html": page_content,
+            "finspang-ua.html": page_content_ukraine,
+            "norrkoping.html": page_content,
+            "norrkoping-ua.html": page_content_ukraine,
+        }
+        
+        for page_url, required_page_content in pages.items():
+            driver.get(website_url + page_url)
+            page_content = driver.find_element(By.ID, "holidays").text.replace("\n", " ")
+            for content in required_page_content:
+                self.assertIn(content, page_content)
+
 
 class testCopyright(unittest.TestCase):
     """
