@@ -147,15 +147,47 @@ if (pageLang == "sv") {
 }
 else {
     openhours_text = {
-        "closed": "Сьогодні ми закриті",
-        "closing_soon": "Ми скоро зачиняємося",
-        "weekdayopenuntil": "Ми працюємо до 16:00",
-        "weekdayopen": "Ми відкриваємось о 10:00",
-        "weekdayclosed": "Ми відкриваємось о 10:00 завтра",
-        "weekdayclosed2": "Ми відкриваємось о 12 ранку. завтра",
-        "weekendopenuntil": "Ми працюємо до 15:00",
-        "weekendopen": "Ми відкриваємось о 12:00",
-        "weekendclosed": "Ми знову відкриваємось у понеділок о 10:00",
+        "closed": "Vi har stängt idag",
+        "closing_soon": "Vi stänger snart",
+        "monday": {
+            "closeint": 17,
+            "openInt": 10,
+            "open": "Vi har öppet till 17 idag",
+            "closed": "Vi öppnar kl 10 idag",
+        },
+        "tuesday": {
+            "closeint": 16,
+            "openInt": 10,
+            "open": "Vi har öppet till 16 idag",
+            "closed": "Vi öppnar kl 10 idag",
+        },
+        "wednesday": {
+            "closeint": 15,
+            "openInt": 10,
+            "open": "Vi har öppet till 15 idag",
+            "closed": "Vi öppnar kl 10 idag",
+        },
+        "thursday": {
+            "closeint": 16,
+            "openInt": 10,
+            "open": "Vi har öppet till 16 idag",
+            "closed": "Vi öppnar kl 10 idag",
+        },
+        "friday": {
+            "closeint": 16,
+            "openInt": 10,
+            "open": "Vi har öppet till 16 idag",
+            "closed": "Vi öppnar kl 10 idag",
+        },
+        "saturday": {
+            "closeint": 15,
+            "openInt": 12,
+            "open": "Vi har öppet till 15 idag",
+            "closed": "Vi öppnar kl 12 idag",
+        },
+        "weekdayOpenTommorrow": "Vi öppnar klockan 10 imorgon",
+        "weekendOpenTommorrow": "Vi öppnar igen klockan 12 imorgon",
+        "weekendclosed": "Vi öppnar igen på Måndag klockan 10",
     }
 }
 
@@ -167,23 +199,37 @@ const current_day_string = weekdayToString(current_day);
 const current_hour = current_date.getHours();
 const current_minute = current_date.getMinutes();
 
+
+// Closed on sundays
 if (current_day == 0) {
     openhour_element.innerText = openhours_text.closed;
 } 
 else if (current_day >= 1 && current_day <= 6) {
+    // on all other days
+
+    // If its less than 30 minutes until closing time
     if (current_hour == (openhours_text[current_day_string].closeint - 1) && current_minute >= 30) {
         openhour_element.innerText = openhours_text.closing_soon;
     }
+
+    // If its open
     else if (current_hour >= openhours_text[current_day_string].openInt && current_hour < openhours_text[current_day_string].closeint) {
         openhour_element.innerText = openhours_text[current_day_string].open;
     }
+
+    // if its before opening time
     else if (current_hour < openhours_text[current_day_string].openInt) {
         openhour_element.innerText = openhours_text[current_day_string].closed;
     }
     else {
+        // if its after closing time
+
+        // if its a weekday
         if (current_hour > openhours_text[current_day_string].closeint && current_day >= 1 && current_day <= 5) {
             openhour_element.innerText = openhours_text.weekdayOpenTommorrow;
         }
+
+        // if its a weekend
         else if (current_hour > openhours_text[current_day_string].closeint && current_day == 6) {
             openhour_element.innerText = openhours_text.weekendOpenTommorrow;
         }
