@@ -14,7 +14,7 @@ let openhours = {
         "close": "Closed"
     }
 }
-let closed_days, openhours_text;
+let closed_days;
 
 if (pageLang == 'uk') {
     /* sort closed days relative to today */
@@ -66,44 +66,6 @@ else {
         "weekendclosed": "Vi öppnar igen på Måndag klockan 10",
     }
 }
-
-
-openhour_element = document.querySelector('#live-openhours');
-
-const current_date = new Date();
-const current_day = current_date.getDay();
-const current_hour = current_date.getHours();
-const current_minute = current_date.getMinutes();
-
-if (current_day == 0) {
-    openhour_element.innerText = openhours_text.closed;
-} else if (current_day == 6) {
-    if ((current_hour == (openhours.saturday.close - 1)) && current_minute >= 30) {
-        openhour_element.innerText = openhours_text.closing_soon;
-    } else if (current_hour >= openhours.saturday.open && current_hour < openhours.saturday.close) {
-        openhour_element.innerText = openhours_text.weekendopenuntil;
-    } else if (current_hour >= openhours.saturday.close) {
-        openhour_element.innerText = openhours_text.weekendclosed;
-    } else {
-        openhour_element.innerText = openhours_text.weekendopen;
-    }
-} else if (current_day >= 1 && current_day <= 5) {
-    if ((current_hour == (openhours.weekdays.close - 1)) && current_minute >= 30) {
-        openhour_element.innerText = openhours_text.closing_soon;
-    } else if (current_hour >= openhours.weekdays.open && current_hour < openhours.weekdays.close) {
-        openhour_element.innerText = openhours_text.weekdayopenuntil;
-    } else if (current_hour >= openhours.weekdays.close) {
-        if (current_day + 1 == 6) {
-            openhour_element.innerText = openhours_text.weekdayclosed2;
-        } else {
-            openhour_element.innerText = openhours_text.weekdayclosed;
-        }
-    } else {
-        openhour_element.innerText = openhours_text.weekdayopen;
-    }
-}
-
-
 
 
 /* Sort closing days */
