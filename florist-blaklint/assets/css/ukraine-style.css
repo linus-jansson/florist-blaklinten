@@ -29,6 +29,13 @@ body,h1,h2,h3,h4,h5,h6{
   text-decoration: none;
 }
 
+.header .hover-orange li a:hover {
+  background-color: #ce6941;
+}
+
+.secondOrange:hover {
+  background-color: #ce6941;
+}
 
 .header .headerTitle {
   display: block;
@@ -112,12 +119,60 @@ body,h1,h2,h3,h4,h5,h6{
   top: 0;
 }
 
+.dropdown {
+  display: inline-block;
+  height: 50px;
+  right: 60px;
+  top: 0px;
+  position: absolute;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #000000;
+  width: 58px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  right: -1px;
+  top: 58px;
+  z-index: 1;
+}
+
+.dropdown-content a {
+  padding-top: 10px;;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.postnumberContainer {
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.postnumberContainer   p:empty::before {
+  content:"";
+  display:inline-block;
+}
 
 .bgimg {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-image: url("../img/bg-b.jpg");
+  height: 100vh;
+}
+
+.bgimg2 {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url("../img/bg-r.jpg");
   height: 100vh;
 }
 
@@ -272,7 +327,6 @@ body,h1,h2,h3,h4,h5,h6{
   flex-direction: column;
   align-items: center;
   padding: 100px 0;
-  background-color:rgb(149, 145, 183);
 }
   
 .openTimes {
@@ -306,7 +360,6 @@ body,h1,h2,h3,h4,h5,h6{
   flex-direction: column;
   align-items: center;
   padding: 0 0 100px 0;
-  background-color:rgb(149, 145, 183);
 }
 
 .closingDays {
@@ -429,18 +482,33 @@ iframe{
       clear: none;
       float: right;
       max-height: none;
+      margin-right: 60px;
     }
     .header .menu-icon {
       display: none;
     }
+
+    .dropdown { 
+      right: 0px;
+    }
   }
 
   @media screen and (max-width: 900px) {
+    .image-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
     .cards {
       display: flex;
       flex-direction: column;
       align-items: center;
       flex-wrap: nowrap;
+    }
+
+    .postnumberContainer {
+      font-size: 10px;
+      margin-top: 80px;
     }
 
     .card {
